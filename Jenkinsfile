@@ -1,23 +1,24 @@
 pipeline{
     agent any
     stages{
-        stage('Run Test'){
+        stage('Start Grid'){
             steps{
-              sh "docker-compose up"
+              sh "docker-compose -f grid.yaml up -d"
 
             }
         }
         stage('Bring Grid Down'){
             steps{
 
-                sh "docker-compose down"
+                sh "docker-compose -f test-suites.yaml up"
 
             }
         }
     }
     post{
         always{
-            echo "Doing clean up"
+          sh "docker-compose -f grid.yaml down"
+          sh "docker-compose -f test-suites.yaml down"
         }
     }
 }
